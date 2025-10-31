@@ -1,23 +1,13 @@
 import { Joi, Segments } from 'celebrate';
 import { isValidObjectId } from 'mongoose';
+import { TAGS } from '../constants/tags.js';
 
 export const getAllNotesSchema = {
   [Segments.QUERY]: Joi.object({
     page: Joi.number().integer().min(1).default(1),
     perPage: Joi.number().integer().min(5).max(20).default(10),
     tag: Joi.string()
-      .valid(
-        'Work',
-        'Personal',
-        'Meeting',
-        'Shopping',
-        'Ideas',
-        'Travel',
-        'Finance',
-        'Health',
-        'Important',
-        'Todo',
-      )
+      .valid(...TAGS)
       .optional(),
     search: Joi.string().allow('').default(''),
   }),
@@ -38,21 +28,7 @@ export const createNoteSchema = {
   [Segments.BODY]: Joi.object({
     title: Joi.string().min(1).required(),
     content: Joi.string().allow('').default('').optional(),
-    tag: Joi.string()
-      .valid(
-        'Work',
-        'Personal',
-        'Meeting',
-        'Shopping',
-        'Ideas',
-        'Travel',
-        'Finance',
-        'Health',
-        'Important',
-        'Todo',
-      )
-      .default('Personal')
-      .optional(),
+    tag: Joi.string().valid(...TAGS).default('Personal').optional(),
   }),
 };
 
@@ -63,20 +39,6 @@ export const updateNoteSchema = {
   [Segments.BODY]: Joi.object({
     title: Joi.string().min(1).optional(),
     content: Joi.string().allow('').default('').optional(),
-    tag: Joi.string()
-      .valid(
-        'Work',
-        'Personal',
-        'Meeting',
-        'Shopping',
-        'Ideas',
-        'Travel',
-        'Finance',
-        'Health',
-        'Important',
-        'Todo',
-      )
-      .default('Personal')
-      .optional(),
+    tag: Joi.string().valid(...TAGS).default('Personal').optional(),
   }).or('title', 'content', 'tag'),
 };
