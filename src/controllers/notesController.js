@@ -39,7 +39,7 @@ export const deleteNote = async (req, res, next) => {
 export const updateNote= async (req, res, next)=>{
     const {noteId}= req.params;
     const note=  await Note.findByIdAndUpdate(
-         { noteId },
+          noteId,
          req.body,
          { new: true },
     );
