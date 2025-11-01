@@ -1,30 +1,29 @@
 import { Note } from '../models/note.js';
 import createHttpError from 'http-errors';
-import { TAGS } from '../constants/tags.js';
 
 export const getAllNotes = async (req, res) => {
-  const {page= 1, perPage=10, tag=TAGS, search} = req.query;
-  const skip = (page-1) * perPage;
+  const { page = 1, perPage = 10, tag, search } = req.query;
+  const skip = (page - 1) * perPage;
 
   const notesQuery = Note.find();
-   if (search) {
-    notesQuery.where({ 
-	  $text: { $search: search } 
-	});
+  if (search) {
+    notesQuery.where({
+      $text: { $search: search },
+    });
   }
   if (tag) {
-    notesQuery.where("tag").equals(tag);
+    notesQuery.where('tag').equals(tag);
   }
-  const [totalItems, notes] = await Promise.all([
+  const [totalNotes, notes] = await Promise.all([
     notesQuery.clone().countDocuments(),
     notesQuery.skip(skip).limit(perPage),
   ]);
-  const totalPages = Math.ceil(totalItems / perPage);
+  const totalPages = Math.ceil(totalNotes / perPage);
 
   res.status(200).json({
     page: Number(page),
     perPage: Number(perPage),
-    totalItems,
+    totalNotes,
     totalPages,
     notes,
   });
@@ -59,16 +58,12 @@ export const deleteNote = async (req, res, next) => {
   res.status(200).json(note);
 };
 
-export const updateNote= async (req, res, next)=>{
-    const {noteId}= req.params;
-    const note=  await Note.findByIdAndUpdate(
-         { noteId },
-         req.body,
-         { new: true },
-    );
-    if(!note){
-        next(createHttpError(404,'Note not found'));
-        return;
-    }
-    res.status(200).json(note);
+export const updateNote = async (req, res, next) => {
+  const { noteId } = req.params;
+  const note = await Note.findByIdAndUpdate(noteId, req.body, { new: true });
+  if (!note) {
+    next(createHttpError(404, 'Note not found'));
+    return;
+  }
+  res.status(200).json(note);
 };
