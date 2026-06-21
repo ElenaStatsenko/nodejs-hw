@@ -41,7 +41,7 @@ export const updateNote= async (req, res, next)=>{
     const note=  await Note.findByIdAndUpdate(
           noteId,
          req.body,
-         { new: true },
+        { returnDocument: 'after' },
     );
     if(!note){
         next(createHttpError(404,'Note not found'));
