@@ -17,7 +17,7 @@ const objectIdValidator = (value, helpers) => {
   return !isValidObjectId(value) ? helpers.message('Invalid id format') : value;
 };
 
-// Схема для перевірки параметра studentId
+// Схема для перевірки параметра noteId
 export const noteIdSchema = {
   [Segments.PARAMS]: Joi.object({
     noteId: Joi.string().required().custom(objectIdValidator),
@@ -28,7 +28,7 @@ export const createNoteSchema = {
   [Segments.BODY]: Joi.object({
     title: Joi.string().min(1).required(),
     content: Joi.string().allow('').default('').optional(),
-    tag: Joi.string().valid(...TAGS).default('Personal').optional(),
+    tag: Joi.string().valid(...TAGS).optional(),
   }),
 };
 
@@ -39,6 +39,6 @@ export const updateNoteSchema = {
   [Segments.BODY]: Joi.object({
     title: Joi.string().min(1).optional(),
     content: Joi.string().allow('').default('').optional(),
-    tag: Joi.string().valid(...TAGS).default('Personal').optional(),
+    tag: Joi.string().valid(...TAGS).optional(),
   }).or('title', 'content', 'tag'),
 };
