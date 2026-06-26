@@ -28,7 +28,7 @@ userSchema.pre('save', function (next) {
   next();
 });
 
-// метод для приховування пароля
+
 userSchema.methods.toJSON= function(){
     const obj= this.toObject();
     delete obj.password;
