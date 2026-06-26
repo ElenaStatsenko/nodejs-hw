@@ -11,7 +11,10 @@ export const getAllNotes = async (req, res) => {
 
   if (search) {
     notesQuery.where({
-      $text: { $search: search },
+      $or: [
+        { title: { $regex: search, $options: 'i' } },
+        { content: { $regex: search, $options: 'i' } },
+      ],
     });
   }
   if (tag) {
@@ -80,7 +83,7 @@ export const updateNote = async (req, res, next) => {
     },
     req.body,
     {
-      new: true,
+      returnDocument: 'after',
     },
   );
 
